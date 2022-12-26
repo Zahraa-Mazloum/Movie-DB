@@ -3,7 +3,7 @@ const app = express();
 const port = 8081;
 
 app.get('/', (req, res) => {
-  res.send('Hello');
+    res.send('Ok');
 });
 
 app.listen(port, (error) => {
@@ -12,4 +12,5 @@ app.listen(port, (error) => {
     }
     else {
         console.log('Something went wrong');
-    }});
+    }
+});
