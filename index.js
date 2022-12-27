@@ -13,8 +13,8 @@ app.get('/movies/add', (req, res) => {
     res.send('Create movie');
 });
 
-app.get('/movies/get',(req,res)=>{
-    res.json({ status: 200, data:movies });
+app.get('/movies/get', (req, res) => {
+    res.json({ status: 200, data: movies });
 })
 
 app.get('/movies/edit', (req, res) => {
@@ -48,6 +48,22 @@ app.get('/search', (req, res) => {
         res.status(500).json({ status: 500, error: true, message: 'you have to provide a search' });
     }
 });
+app.get('/movies/read/by-date', (req, res) => {
+    const sortedMovies = movies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+
+    res.send({ status: 200, data: sortedMovies, });
+});
+
+app.get('/movies/read/by-rating', (req, res) => {
+    const ratingMovies = movies.sort((a, b) => b.rating - a.rating);
+    res.send({status: 200,data: ratingMovies});
+});
+
+app.get('/movies/read/by-title', (req, res) => {
+    const moviesTitle = movies.sort((a, b) => a.title.localeCompare(b.title));
+    res.send({status: 200,data: moviesTitle, });
+});
+
 
 app.listen(port, (error) => {
     if (!error) {
