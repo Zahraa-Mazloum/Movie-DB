@@ -8,12 +8,8 @@ const movies = [
     { title: 'Brazil', year: 1985, rating: 8 },
     { title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
 ]
-
-app.get('/movies/add', (req, res) => {
-    res.send('Create movie');
-});
-
-app.get('/movies/get', (req, res) => {
+//create
+app.post('/movies/get', (req, res) => {
     const { title, year, rating } = req.query
     if (!rating) {
         rating = 4
@@ -46,7 +42,7 @@ app.put('/movies/update/:id', (req, res) => {
 
     res.send(movies);
   });
-
+//delete
 app.delete('/movies/delete/:id', (req, res) => {
     const id = req.params.id;
     if (!movies.includes(id)) {
