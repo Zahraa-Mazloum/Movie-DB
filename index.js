@@ -28,7 +28,7 @@ app.get('/movies/get', (req, res) => {
     movies.push(addNewMovie)
     res.json({ movies })
 })
-
+//update
 app.put('/movies/update/:id', (req, res) => {
     const id = req.params.id;
     const updateTitle = req.query.title;
@@ -46,7 +46,7 @@ app.put('/movies/update/:id', (req, res) => {
 
     res.send(movies);
   });
-  
+
 app.delete('/movies/delete/:id', (req, res) => {
     const id = req.params.id;
     if (!movies.includes(id)) {
