@@ -29,9 +29,24 @@ app.get('/movies/get', (req, res) => {
     res.json({ movies })
 })
 
-app.get('/movies/edit', (req, res) => {
-    res.send('Update movie');
-});
+app.put('/movies/update/:id', (req, res) => {
+    const id = req.params.id;
+    const updateTitle = req.query.title;
+    const updateRating = req.query.rating;
+  
+    const movie = movies.find(movie => movie.id === id);
+    if (movie) {
+      if (updateTitle) {
+        movie.title = updateTitle;
+      }
+      if (updateRating) {
+        movie.rating = updateRating;
+      }
+    }
+  
+    res.send(movies);
+  });
+
 app.delete('/movies/delete/:id', (req, res) => {
     const id = req.params.id;
     if (!movies.includes(id)) {
