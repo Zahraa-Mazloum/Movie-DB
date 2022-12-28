@@ -29,37 +29,12 @@ app.get('/movies/get', (req, res) => {
     res.json({ movies })
 })
 
-app.put('/movies/update/:id', (req, res) => {
-    const id = req.params.id;
-    const updateTitle = req.query.title;
-    const updateRating = req.query.rating;
-  
-    const movie = movies.find(movie => movie.id === id);
-    if (movie) {
-      if (updateTitle) {
-        movie.title = updateTitle;
-      }
-      if (updateRating) {
-        movie.rating = updateRating;
-      }
-    }
-  
-    res.send(movies);
-  });
-
-app.delete('/movies/delete/:id', (req, res) => {
-    const id = req.params.id;
-    if (!movies.includes(id)) {
-    res.json({ status: 404, error: true, message: `the movie +${id} does not existcu`})
-   }
-   else {
-    var index = movies.indexOf(id);
-    movies.splice(index,1)
-   }
-   res.json({ movies })
-
-})
-
+app.get('/movies/edit', (req, res) => {
+    res.send('Update movie');
+});
+app.get('/movies/delete', (req, res) => {
+    res.send('Delete movie');
+});
 app.get('/test', (req, res) => {
     res.json({ status: 200, message: 'ok' });
 });
