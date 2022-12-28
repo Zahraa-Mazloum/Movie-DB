@@ -32,7 +32,7 @@ app.get('/movies/get', (req, res) => {
 app.get('/movies/edit', (req, res) => {
     res.send('Update movie');
 });
-app.get('/movies/delete/:id', (req, res) => {
+app.delete('/movies/delete/:id', (req, res) => {
     const id = req.params.id;
     if (!movies.includes(id)) {
     res.json({ status: 404, error: true, message: `the movie +${id} does not existcu`})
