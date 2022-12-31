@@ -35,6 +35,8 @@ app.use((req,res,next)=>{
 
 //route prefix
 app.use("",require("./routes"))
+app.use("",require("./user_route"))
+
 
 app.listen(port, () => {
     console.log(`Server started at  http://localhost:${port}`);
