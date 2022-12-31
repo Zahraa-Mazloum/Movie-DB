@@ -1,121 +1,41 @@
+//imports
+require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session')
+
 const app = express();
-const port = 8081;
+const port = process.env.PORT || 4000;
 
-const movies = [
-    { title: 'Jaws', year: 1975, rating: 8 },
-    { title: 'Avatar', year: 2009, rating: 7.8 },
-    { title: 'Brazil', year: 1985, rating: 8 },
-    { title: 'الإرهاب والكباب', year: 1992, rating: 6.2 }
-]
-//create
-app.post('/movies/get', (req, res) => {
-    const { title, year, rating } = req.query
-    if (!rating) {
-        rating = 4
-    }
-    if (!title || !year || year.length !== 4 || isNaN(year)) {
-        res.json({ status: 403, error: true, message: 'you cannot create a movie without providing a title and a year' })
-    } else {
-        const addNewMovie = {
-            title, year, rating
-        }
-    }
-    movies.push(addNewMovie)
-    res.json({ movies })
+//databse
+mongoose.connect(process.env.db_uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on('error', (error) => console.log(error));
+db.once('open', () => {
+    console.log('Connected to MongoDB');
 })
-//update
-app.put('/movies/update/:id', (req, res) => {
-    const id = req.params.id;
-    const updateTitle = req.query.title;
-    const updateRating = req.query.rating;
+//mildllewarwes
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-    const movie = movies.find(movie => movie.id === id);
-    if (movie) {
-      if (updateTitle) {
-        movie.title = updateTitle;
-      }
-      if (updateRating) {
-        movie.rating = updateRating;
-      }
-    }
+app.use(
+    session({
+    secret: 'zahraamazloum',
+    saveUninitialized: true,
+    resave: false, })
+);
 
-    res.send(movies);
-  });
-//delete
-app.delete('/movies/delete/:id', (req, res) => {
-    const id = req.params.id;
-    if (!movies.includes(id)) {
-    res.json({ status: 404, error: true, message: `the movie +${id} does not existcu`})
-   }
-   else {
-    var index = movies.indexOf(id);
-    movies.splice(index,1)
-   }
-   res.json({ movies })
+app.use((req,res,next)=>{
+    res.locals.message=req.session.message;
+    delete req.session.message;
+    next();
 
 })
-app.get('/test', (req, res) => {
-    res.json({ status: 200, message: 'ok' });
-});
-app.get('/time', (req, res) => {
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    res.json({ status: 200, message: `${hours}:${minutes}` });
 
-});
 
-app.get('/hello/:id', (req, res) => {
-    const id = req.params.id;
-    res.json({ status: 200, message: `Hello, ${id}` });
-});
+//route prefix
+app.use("",require("./routes"))
 
-app.get('/search', (req, res) => {
-    const search = req.query.s
-        ;
-    if (search) {
-        res.json({ status: 200, message: 'ok', data: search });
-    } else {
-        res.status(500).json({ status: 500, error: true, message: 'you have to provide a search' });
-    }
-});
-app.get('/movies/read/by-date', (req, res) => {
-    const sortedMovies = movies.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
-
-    res.send({ status: 200, data: sortedMovies, });
-});
-
-app.get('/movies/read/by-rating', (req, res) => {
-    const ratingMovies = movies.sort((a, b) => b.rating - a.rating);
-    res.send({ status: 200, data: ratingMovies });
-});
-
-app.get('/movies/read/by-title', (req, res) => {
-    const moviesTitle = movies.sort((a, b) => a.title.localeCompare(b.title));
-    res.send({ status: 200, data: moviesTitle, });
-});
-
-app.get('/movies/read/id/:id', (req, res) => {
-    const movieId = req.params.id;
-    const movie = movies.find(movie => movie.id === movieId);
-
-    if (movie) {
-        res.send({
-            status: 200, data: movie
-        });
-    } else {
-        res.status(404).send({
-            status: 404, error: true, message: `The movie ${movieId} does not exist`,
-        });
-    }
-});
-
-app.listen(port, (error) => {
-    if (!error) {
-        console.log('Ok');
-    }
-    else {
-        console.log('Something went wrong');
-    }
+app.listen(port, () => {
+    console.log(`Server started at  http://localhost:${port}`);
 });
